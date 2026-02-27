@@ -2,7 +2,7 @@
 # Builds are free & unlimited on public repos.
 #
 # REQUIRED SECRETS:
-#   Environment secret (Configure Tauri Deployment Env):
+#   Environment secret (Tauri Deployment Env):
 #     - PRIVATE_REPO_PAT_FOR_TAURI         : Fine-grained PAT with Contents:Read on Pritraj/record-tor
 #   Repository secrets:
 #     - TAURI_SIGNING_PRIVATE_KEY          : Tauri update signing key (~/.tauri/myshapkey.key)
@@ -26,7 +26,7 @@ jobs:
   build:
     permissions:
       contents: write
-    environment: Configure Tauri Deployment Env
+    environment: Tauri Deployment Env
     strategy:
       fail-fast: false
       matrix:
