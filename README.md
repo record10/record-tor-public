@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Record10/record-tor-public/main/assets/record-tor-logo.png" alt="RecordTor" width="120"/>
-</p>
-
 <h1 align="center">RecordTor</h1>
 
 <p align="center">
