@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Pritraj/record-tor-public/main/assets/record-tor-logo.png" alt="Record Tor" width="120"/>
+  <img src="https://raw.githubusercontent.com/Record10/record-tor-public/main/assets/record-tor-logo.png" alt="RecordTor" width="120"/>
 </p>
 
-<h1 align="center">Record Tor</h1>
+<h1 align="center">RecordTor</h1>
 
 <p align="center">
   A modern, lightweight desktop torrent client with built-in video streaming.
 </p>
 
 <p align="center">
-  <a href="https://github.com/Pritraj/record-tor-public/releases/latest">
-    <img src="https://img.shields.io/github/v/release/Pritraj/record-tor-public?label=Download&style=for-the-badge" alt="Download Latest Release"/>
+  <a href="https://github.com/Record10/record-tor-public/releases/latest">
+    <img src="https://img.shields.io/github/v/release/Record10/record-tor-public?label=Download&style=for-the-badge" alt="Download Latest Release"/>
   </a>
 </p>
 
@@ -27,21 +27,21 @@
 - **Dark / Light Theme** — Switch between dark and light mode
 - **Deep Linking** — Open magnet links directly from your browser via `torrent://` protocol
 - **System Tray** — Minimize to tray and keep downloading in the background
-- **Start on Boot** — Optionally launch Record Tor when your system starts
+- **Start on Boot** — Optionally launch RecordTor when your system starts
 - **Cross-Platform** — Available for macOS, Windows, and Linux
 
 ---
 
 ## Download
 
-Head to the [**Releases**](https://github.com/Pritraj/record-tor-public/releases/latest) page and download the installer for your operating system:
+Head to the [**Releases**](https://github.com/Record10/record-tor-public/releases/latest) page and download the installer for your operating system:
 
-| Platform | File |
-|----------|------|
-| **macOS** | `RecordTor_x64.dmg` |
-| **Windows** | `RecordTor_x64-setup.exe` |
+| Platform             | File                        |
+| -------------------- | --------------------------- |
+| **macOS**            | `RecordTor_x64.dmg`         |
+| **Windows**          | `RecordTor_x64-setup.exe`   |
 | **Linux (AppImage)** | `record-tor_amd64.AppImage` |
-| **Linux (Debian)** | `record-tor_amd64.deb` |
+| **Linux (Debian)**   | `record-tor_amd64.deb`      |
 
 ---
 
@@ -49,19 +49,19 @@ Head to the [**Releases**](https://github.com/Pritraj/record-tor-public/releases
 
 ### macOS
 
-1. Download `RecordTor_x64.dmg` from the [Releases](https://github.com/Pritraj/record-tor-public/releases/latest) page.
-2. Open the `.dmg` file and drag **Record Tor** into your **Applications** folder.
+1. Download `RecordTor_x64.dmg` from the [Releases](https://github.com/Record10/record-tor-public/releases/latest) page.
+2. Open the `.dmg` file and drag **RecordTor** into your **Applications** folder.
 3. **Important — the app is unsigned.** macOS will block it on first launch. To allow it, run the following command in Terminal **once** after installation:
 
    ```bash
    xattr -cr /Applications/RecordTor.app
    ```
 
-4. Now you can open Record Tor normally from Applications.
+4. Now you can open RecordTor normally from Applications.
 
 ### Windows
 
-1. Download `RecordTor_x64-setup.exe` from the [Releases](https://github.com/Pritraj/record-tor-public/releases/latest) page.
+1. Download `RecordTor_x64-setup.exe` from the [Releases](https://github.com/Record10/record-tor-public/releases/latest) page.
 2. Run the installer and follow the on-screen instructions.
 3. **The app is unsigned**, so Windows SmartScreen may show a warning. Click **"More info"** and then **"Run anyway"** to proceed with the installation.
 
@@ -69,7 +69,7 @@ Head to the [**Releases**](https://github.com/Pritraj/record-tor-public/releases
 
 #### AppImage
 
-1. Download `record-tor_amd64.AppImage` from the [Releases](https://github.com/Pritraj/record-tor-public/releases/latest) page.
+1. Download `record-tor_amd64.AppImage` from the [Releases](https://github.com/Record10/record-tor-public/releases/latest) page.
 2. Make it executable and run:
 
    ```bash
@@ -79,7 +79,7 @@ Head to the [**Releases**](https://github.com/Pritraj/record-tor-public/releases
 
 #### Debian / Ubuntu (.deb)
 
-1. Download `record-tor_amd64.deb` from the [Releases](https://github.com/Pritraj/record-tor-public/releases/latest) page.
+1. Download `record-tor_amd64.deb` from the [Releases](https://github.com/Record10/record-tor-public/releases/latest) page.
 2. Install it:
 
    ```bash
