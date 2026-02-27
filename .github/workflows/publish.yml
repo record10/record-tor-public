@@ -93,15 +93,21 @@ jobs:
             echo "tag=v${{ steps.get_version.outputs.version }}" >> $GITHUB_OUTPUT
           fi
 
-      # ─── Windows workaround ───
-      - name: Workaround for deep-link on Windows
-        if: runner.os == 'Windows'
+      # ─── Patch tauri.conf.json ───
+      - name: Remove beforeBuildCommand (frontend already built)
         shell: bash
         run: |
-          # Remove deep-link config to prevent plugin panic on Windows
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             choco install jq -y 2>/dev/null || true
           fi
+          jq 'del(.build.beforeBuildCommand, .build.beforeDevCommand)' src-tauri/tauri.conf.json > src-tauri/tauri.conf.temp.json
+          mv src-tauri/tauri.conf.temp.json src-tauri/tauri.conf.json
+
+      # ─── Windows workaround ───
+      - name: Remove deep-link config on Windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
           jq 'del(.plugins."deep-link")' src-tauri/tauri.conf.json > src-tauri/tauri.conf.temp.json
           mv src-tauri/tauri.conf.temp.json src-tauri/tauri.conf.json
 
