@@ -1,12 +1,14 @@
 # Place this file at .github/workflows/publish.yml in the PUBLIC repo (Record10/record-tor)
 # Builds are free & unlimited on public repos.
 #
-# REQUIRED SECRETS:
-#   Environment secret (Tauri Deployment Env):
-#     - PRIVATE_REPO_PAT_FOR_TAURI         : Fine-grained PAT with Contents:Read on Pritraj/record-tor
-#   Repository secrets:
-#     - TAURI_SIGNING_PRIVATE_KEY          : Tauri update signing key (~/.tauri/myshapkey.key)
-#     - TAURI_SIGNING_PRIVATE_KEY_PASSWORD : Password for the signing key
+# REQUIRED SECRETS (Org Level - Record10):
+#   - PRIVATE_REPO_PAT        : Fine-grained PAT with Contents:Read on Record10/killi
+#   - TAURI_SIGNING_PRIVATE_KEY          : Tauri update signing key
+#   - TAURI_SIGNING_PRIVATE_KEY_PASSWORD : Password for the signing key
+#   - ANDROID_KEYSTORE_BASE64            : Base64-encoded upload keystore
+#   - KEYSTORE_PASSWORD                  : Keystore password
+#   - KEY_ALIAS                          : Key alias
+#   - KEY_PASSWORD                       : Key password
 #
 name: Release
 
@@ -23,10 +25,12 @@ on:
           - main
 
 jobs:
-  build:
+  # ─────────────────────────────────────────────────────────────────────
+  # Desktop builds (macOS + Windows)
+  # ─────────────────────────────────────────────────────────────────────
+  build-desktop:
     permissions:
       contents: write
-    environment: Tauri Deployment Env
     strategy:
       fail-fast: false
       matrix:
@@ -43,7 +47,7 @@ jobs:
         shell: bash
         run: |
           git clone --depth 1 --branch ${{ inputs.branch }} \
-            https://x-access-token:${{ secrets.PRIVATE_REPO_PAT_FOR_TAURI }}@github.com/Pritraj/record-tor.git .
+            https://x-access-token:${{ secrets.PRIVATE_REPO_PAT }}@github.com/Pritraj/record-tor.git .
 
       # ─── Common setup ───
       - name: Install Node.js
@@ -125,3 +129,181 @@ jobs:
           releaseBody: "See the assets to download this version and install."
           releaseDraft: false
           prerelease: ${{ steps.release_config.outputs.prerelease }}
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Android build (signed APK — arm64-v8a)
+  # ─────────────────────────────────────────────────────────────────────
+  build-android:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+      # ─── Clone source from private repo ───
+      - name: Clone private repository
+        shell: bash
+        run: |
+          git clone --depth 1 --branch ${{ inputs.branch }} \
+            https://x-access-token:${{ secrets.PRIVATE_REPO_PAT }}@github.com/Pritraj/record-tor.git .
+
+      # ─── Common setup ───
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android NDK
+        shell: bash
+        run: |
+          sdkmanager --install "ndk;27.0.12077973"
+          echo "NDK_HOME=$ANDROID_HOME/ndk/27.0.12077973" >> $GITHUB_ENV
+
+      # ─── Build frontend ───
+      - name: Install frontend dependencies
+        run: npm install
+
+      - name: Build frontend
+        run: npm run build
+
+      # ─── Read version from tauri.conf.json ───
+      - name: Get Version
+        id: get_version
+        shell: bash
+        run: |
+          VERSION=$(grep '"version":' src-tauri/tauri.conf.json | head -n 1 | awk -F: '{ print $2 }' | sed 's/[", ]//g')
+          echo "Building version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Determine Release Config
+        id: release_config
+        shell: bash
+        run: |
+          if [[ "${{ inputs.branch }}" == "qa" ]]; then
+            echo "type=qa" >> $GITHUB_OUTPUT
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+            echo "tag=v${{ steps.get_version.outputs.version }}-qa.${{ github.run_number }}" >> $GITHUB_OUTPUT
+
+            if [[ -f "src-tauri/tauri.conf.qa.json" ]]; then
+              jq -s '.[0] * .[1]' src-tauri/tauri.conf.json src-tauri/tauri.conf.qa.json > src-tauri/tauri.conf.merged.json
+              mv src-tauri/tauri.conf.merged.json src-tauri/tauri.conf.json
+            fi
+          else
+            echo "type=prod" >> $GITHUB_OUTPUT
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+            echo "tag=v${{ steps.get_version.outputs.version }}" >> $GITHUB_OUTPUT
+          fi
+
+      # ─── Patch tauri.conf.json ───
+      - name: Remove beforeBuildCommand (frontend already built)
+        shell: bash
+        run: |
+          jq 'del(.build.beforeBuildCommand, .build.beforeDevCommand)' src-tauri/tauri.conf.json > src-tauri/tauri.conf.temp.json
+          mv src-tauri/tauri.conf.temp.json src-tauri/tauri.conf.json
+
+      # ─── Decode Android keystore ───
+      - name: Decode Android keystore
+        shell: bash
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > /tmp/upload-keystore.jks
+
+      # ─── Build Android ───
+      - name: Initialize Tauri Android
+        run: npx tauri android init
+
+      - name: Build Android APK & AAB
+        shell: bash
+        run: |
+          npx tauri android build --target aarch64 -- \
+            --release
+        env:
+          NDK_HOME: ${{ env.NDK_HOME }}
+
+      # ─── Sign the APK ───
+      - name: Sign APK
+        shell: bash
+        run: |
+          UNSIGNED_APK=$(find src-tauri/gen/android -name "*.apk" -path "*release*" | head -1)
+          if [ -z "$UNSIGNED_APK" ]; then
+            UNSIGNED_APK=$(find src-tauri/gen/android -name "*.apk" | head -1)
+          fi
+          echo "Found APK: $UNSIGNED_APK"
+
+          BUILD_TOOLS_DIR="${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | sort -V | tail -1)"
+
+          # Align and sign APK
+          ${BUILD_TOOLS_DIR}/zipalign -v 4 "$UNSIGNED_APK" /tmp/recordtor-aligned.apk
+          ${BUILD_TOOLS_DIR}/apksigner sign \
+            --ks /tmp/upload-keystore.jks \
+            --ks-key-alias "${{ secrets.KEY_ALIAS }}" \
+            --ks-pass "pass:${{ secrets.KEYSTORE_PASSWORD }}" \
+            --key-pass "pass:${{ secrets.KEY_PASSWORD }}" \
+            --out /tmp/RecordTor-${{ steps.get_version.outputs.version }}-arm64.apk \
+            /tmp/recordtor-aligned.apk
+
+      # ─── Sign the AAB ───
+      - name: Sign AAB
+        shell: bash
+        run: |
+          UNSIGNED_AAB=$(find src-tauri/gen/android -name "*.aab" -path "*release*" | head -1)
+          if [ -z "$UNSIGNED_AAB" ]; then
+            echo "No AAB found, building AAB..."
+            cd src-tauri/gen/android
+            ./gradlew bundleUniversalRelease
+            UNSIGNED_AAB=$(find . -name "*.aab" -path "*release*" | head -1)
+          fi
+          echo "Found AAB: $UNSIGNED_AAB"
+
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore /tmp/upload-keystore.jks \
+            -storepass "${{ secrets.KEYSTORE_PASSWORD }}" \
+            -keypass "${{ secrets.KEY_PASSWORD }}" \
+            "$UNSIGNED_AAB" "${{ secrets.KEY_ALIAS }}"
+
+          cp "$UNSIGNED_AAB" /tmp/RecordTor-${{ steps.get_version.outputs.version }}-arm64.aab
+
+      # ─── Upload APK & AAB to GitHub Release ───
+      - name: Upload to Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.release_config.outputs.tag }}"
+          APK_PATH="/tmp/RecordTor-${{ steps.get_version.outputs.version }}-arm64.apk"
+          AAB_PATH="/tmp/RecordTor-${{ steps.get_version.outputs.version }}-arm64.aab"
+
+          # Wait for the release to be created by desktop builds (or create it)
+          for i in $(seq 1 30); do
+            if gh release view "$TAG" > /dev/null 2>&1; then
+              echo "Release $TAG found, uploading artifacts..."
+              gh release upload "$TAG" "$APK_PATH" "$AAB_PATH" --clobber
+              echo "APK and AAB uploaded successfully!"
+              exit 0
+            fi
+            echo "Waiting for release $TAG to be created... (attempt $i/30)"
+            sleep 30
+          done
+
+          # If release doesn't exist after waiting, create it
+          echo "Release not found after waiting, creating it..."
+          PRERELEASE_FLAG=""
+          if [[ "${{ steps.release_config.outputs.prerelease }}" == "true" ]]; then
+            PRERELEASE_FLAG="--prerelease"
+          fi
+          gh release create "$TAG" "$APK_PATH" "$AAB_PATH" \
+            --title "Record Tor $TAG" \
+            --notes "See the assets to download this version and install." \
+            $PRERELEASE_FLAG
