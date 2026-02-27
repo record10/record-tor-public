@@ -1,10 +1,12 @@
 # Place this file at .github/workflows/publish.yml in the PUBLIC repo (Record10/record-tor)
 # Builds are free & unlimited on public repos.
 #
-# REQUIRED SECRETS (set in Record10/record-tor → Settings → Secrets):
-#   - PRIVATE_REPO_PAT                   : Fine-grained PAT with Contents:Read on Pritraj/record-tor
-#   - TAURI_SIGNING_PRIVATE_KEY          : Tauri update signing key (~/.tauri/myshapkey.key)
-#   - TAURI_SIGNING_PRIVATE_KEY_PASSWORD : Password for the signing key
+# REQUIRED SECRETS:
+#   Environment secret (Configure Tauri Deployment Env):
+#     - PRIVATE_REPO_PAT_FOR_TAURI         : Fine-grained PAT with Contents:Read on Pritraj/record-tor
+#   Repository secrets:
+#     - TAURI_SIGNING_PRIVATE_KEY          : Tauri update signing key (~/.tauri/myshapkey.key)
+#     - TAURI_SIGNING_PRIVATE_KEY_PASSWORD : Password for the signing key
 #
 name: Release
 
@@ -24,6 +26,7 @@ jobs:
   build:
     permissions:
       contents: write
+    environment: Configure Tauri Deployment Env
     strategy:
       fail-fast: false
       matrix:
@@ -40,7 +43,7 @@ jobs:
         shell: bash
         run: |
           git clone --depth 1 --branch ${{ inputs.branch }} \
-            https://x-access-token:${{ secrets.PRIVATE_REPO_PAT }}@github.com/Pritraj/record-tor.git .
+            https://x-access-token:${{ secrets.PRIVATE_REPO_PAT_FOR_TAURI }}@github.com/Pritraj/record-tor.git .
 
       # ─── Common setup ───
       - name: Install Node.js
