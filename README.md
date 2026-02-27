@@ -1,7 +1,7 @@
 <h1 align="center">RecordTor</h1>
 
 <p align="center">
-  A modern, lightweight desktop torrent client with built-in video streaming.
+  A modern, lightweight torrent client with built-in video streaming — available on desktop and Android.
 </p>
 
 <p align="center">
@@ -24,7 +24,7 @@
 - **Deep Linking** — Open magnet links directly from your browser via `torrent://` protocol
 - **System Tray** — Minimize to tray and keep downloading in the background
 - **Start on Boot** — Optionally launch RecordTor when your system starts
-- **Cross-Platform** — Available for macOS, Windows, and Linux
+- **Cross-Platform** — Available for macOS, Windows, Linux, and Android
 
 ---
 
@@ -38,6 +38,7 @@ Head to the [**Releases**](https://github.com/Record10/record-tor-public/release
 | **Windows**          | `RecordTor_x64-setup.exe`   |
 | **Linux (AppImage)** | `record-tor_amd64.AppImage` |
 | **Linux (Debian)**   | `record-tor_amd64.deb`      |
+| **Android**          | `RecordTor.apk`             |
 
 ---
 
@@ -81,6 +82,12 @@ Head to the [**Releases**](https://github.com/Record10/record-tor-public/release
    ```bash
    sudo dpkg -i record-tor_amd64.deb
    ```
+
+### Android
+
+1. Download `RecordTor.apk` from the [Releases](https://github.com/Record10/record-tor-public/releases/latest) page.
+2. Open the APK file on your device. If prompted, enable **"Install from unknown sources"** in your device settings.
+3. Follow the on-screen instructions to complete the installation.
 
 ---
 
