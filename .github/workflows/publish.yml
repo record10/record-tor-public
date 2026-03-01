@@ -284,11 +284,13 @@ jobs:
           APK_PATH="/tmp/RecordTor-${{ steps.get_version.outputs.version }}-arm64.apk"
           AAB_PATH="/tmp/RecordTor-${{ steps.get_version.outputs.version }}-arm64.aab"
 
+          REPO="${{ github.repository }}"
+
           # Wait for the release to be created by desktop builds (or create it)
           for i in $(seq 1 30); do
-            if gh release view "$TAG" > /dev/null 2>&1; then
+            if gh release view "$TAG" --repo "$REPO" > /dev/null 2>&1; then
               echo "Release $TAG found, uploading artifacts..."
-              gh release upload "$TAG" "$APK_PATH" "$AAB_PATH" --clobber
+              gh release upload "$TAG" "$APK_PATH" "$AAB_PATH" --clobber --repo "$REPO"
               echo "APK and AAB uploaded successfully!"
               exit 0
             fi
@@ -305,4 +307,5 @@ jobs:
           gh release create "$TAG" "$APK_PATH" "$AAB_PATH" \
             --title "Record Tor $TAG" \
             --notes "See the assets to download this version and install." \
+            --repo "$REPO" \
             $PRERELEASE_FLAG
