@@ -123,7 +123,7 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
-          projectPath: src-tauri
+          tauriScript: npx tauri
           tagName: ${{ steps.release_config.outputs.tag }}
           releaseName: "Record Tor ${{ steps.release_config.outputs.tag }}"
           releaseBody: "See the assets to download this version and install."
