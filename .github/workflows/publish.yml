@@ -169,8 +169,8 @@ jobs:
       - name: Install Android NDK
         shell: bash
         run: |
-          sdkmanager --install "ndk;27.0.12077973"
-          echo "NDK_HOME=$ANDROID_HOME/ndk/27.0.12077973" >> $GITHUB_ENV
+          sdkmanager --install "ndk;27.2.12479018"
+          echo "NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> $GITHUB_ENV
 
       # ─── Build frontend ───
       - name: Install frontend dependencies
@@ -227,8 +227,7 @@ jobs:
       - name: Build Android APK & AAB
         shell: bash
         run: |
-          npx tauri android build --target aarch64 -- \
-            --release
+          npx tauri android build --target aarch64
         env:
           NDK_HOME: ${{ env.NDK_HOME }}
 
