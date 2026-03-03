@@ -237,10 +237,10 @@ jobs:
           fi
 
       # ─── Patch tauri.conf.json ───
-      - name: Remove beforeBuildCommand (frontend already built)
+      - name: Remove beforeBuildCommand and externalBin (not needed for Android)
         shell: bash
         run: |
-          jq 'del(.build.beforeBuildCommand, .build.beforeDevCommand)' src-tauri/tauri.conf.json > src-tauri/tauri.conf.temp.json
+          jq 'del(.build.beforeBuildCommand, .build.beforeDevCommand, .bundle.externalBin)' src-tauri/tauri.conf.json > src-tauri/tauri.conf.temp.json
           mv src-tauri/tauri.conf.temp.json src-tauri/tauri.conf.json
 
       # ─── Decode Android keystore ───
