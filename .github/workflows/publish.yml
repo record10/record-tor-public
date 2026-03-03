@@ -65,6 +65,35 @@ jobs:
       - name: Build frontend
         run: npm run build
 
+      # ─── Download FFmpeg for sidecar bundling ───
+      - name: Download FFmpeg (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          mkdir -p src-tauri/binaries
+          TMPDIR=$(mktemp -d)
+          curl -L -o "$TMPDIR/ffmpeg.zip" "https://evermeet.cx/ffmpeg/getrelease/zip"
+          unzip -o "$TMPDIR/ffmpeg.zip" -d "$TMPDIR"
+          # Tauri builds universal macOS binaries, provide both architectures
+          cp "$TMPDIR/ffmpeg" src-tauri/binaries/ffmpeg-x86_64-apple-darwin
+          cp "$TMPDIR/ffmpeg" src-tauri/binaries/ffmpeg-aarch64-apple-darwin
+          chmod +x src-tauri/binaries/ffmpeg-*
+          rm -rf "$TMPDIR"
+          echo "FFmpeg downloaded for macOS"
+
+      - name: Download FFmpeg (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          mkdir -p src-tauri/binaries
+          TMPDIR=$(mktemp -d)
+          curl -L -o "$TMPDIR/ffmpeg.zip" "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip"
+          unzip -o "$TMPDIR/ffmpeg.zip" -d "$TMPDIR"
+          FFMPEG_EXE=$(find "$TMPDIR" -name 'ffmpeg.exe' -type f | head -1)
+          cp "$FFMPEG_EXE" src-tauri/binaries/ffmpeg-x86_64-pc-windows-msvc.exe
+          rm -rf "$TMPDIR"
+          echo "FFmpeg downloaded for Windows"
+
       # ─── Read version from tauri.conf.json ───
       - name: Get Version
         id: get_version
@@ -223,6 +252,31 @@ jobs:
       # ─── Build Android ───
       - name: Initialize Tauri Android
         run: npx tauri android init
+
+      # ─── Sync custom Android files (overwritten by tauri android init) ───
+      - name: Sync custom Android files
+        shell: bash
+        run: |
+          JAVA_DIR="src-tauri/gen/android/app/src/main/java/com/recordtor/app"
+          MANIFEST="src-tauri/gen/android/app/src/main/AndroidManifest.xml"
+          GRADLE="src-tauri/gen/android/app/build.gradle.kts"
+
+          # Copy custom Kotlin files from android-overrides/
+          cp src-tauri/android-overrides/MainActivity.kt "$JAVA_DIR/MainActivity.kt"
+          cp src-tauri/android-overrides/VideoPlayerActivity.kt "$JAVA_DIR/VideoPlayerActivity.kt"
+          echo "✅ Copied custom Kotlin files"
+
+          # Patch AndroidManifest.xml — register VideoPlayerActivity
+          if ! grep -q 'VideoPlayerActivity' "$MANIFEST"; then
+            sed -i 's|</activity>|</activity>\n        <activity android:name=".VideoPlayerActivity" android:configChanges="orientation\|keyboardHidden\|keyboard\|screenSize\|screenLayout\|uiMode" android:exported="false" android:theme="@style/Theme.AppCompat.NoActionBar" />|' "$MANIFEST"
+            echo "✅ Patched AndroidManifest.xml"
+          fi
+
+          # Patch build.gradle.kts — add ExoPlayer dependencies
+          if ! grep -q 'media3-exoplayer' "$GRADLE"; then
+            sed -i '/dependencies {/a\    implementation("androidx.media3:media3-exoplayer:1.6.1")\n    implementation("androidx.media3:media3-ui:1.6.1")' "$GRADLE"
+            echo "✅ Patched build.gradle.kts"
+          fi
 
       - name: Build Android APK & AAB
         shell: bash
