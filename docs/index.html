@@ -11,7 +11,7 @@
     <link
       rel="icon"
       type="image/svg+xml"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236c63ff'/%3E%3Cstop offset='100%25' stop-color='%23574fd6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='url(%23g)'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-family='Arial,sans-serif' font-weight='800' font-size='52' fill='white'%3ERT%3C/text%3E%3C/svg%3E"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ff6b6b'/%3E%3Cstop offset='100%25' stop-color='%23e74c3c'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='url(%23g)'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-family='Arial,sans-serif' font-weight='800' font-size='52' fill='white'%3ERT%3C/text%3E%3C/svg%3E"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,14 +29,15 @@
       }
 
       :root {
-        --bg: #0f1117;
-        --bg2: #1a1d27;
-        --bg3: #22263a;
-        --accent: #6c63ff;
-        --accent-hover: #574fd6;
-        --text: #e8eaf6;
-        --text-muted: #8b8fa8;
-        --border: #2a2d3e;
+        --bg: #000000;
+        --bg2: #111111;
+        --bg3: #212121;
+        --accent: #ff6b6b;
+        --accent-hover: #e74c3c;
+        --secondary: #4ecdc4;
+        --text: #e9ecef;
+        --text-muted: #adb5bd;
+        --border: #363636;
         --radius: 12px;
       }
 
@@ -63,7 +64,7 @@
         justify-content: space-between;
         padding: 0 2rem;
         height: 60px;
-        background: rgba(15, 17, 23, 0.85);
+        background: rgba(0, 0, 0, 0.85);
         backdrop-filter: blur(12px);
         border-bottom: 1px solid var(--border);
       }
@@ -105,15 +106,15 @@
         padding: 7rem 1.5rem 5rem;
         background: radial-gradient(
           ellipse 70% 50% at 50% -10%,
-          rgba(108, 99, 255, 0.18),
+          rgba(255, 107, 107, 0.18),
           transparent
         );
       }
       .hero-badge {
         display: inline-block;
-        background: rgba(108, 99, 255, 0.15);
+        background: rgba(255, 107, 107, 0.15);
         color: var(--accent);
-        border: 1px solid rgba(108, 99, 255, 0.3);
+        border: 1px solid rgba(255, 107, 107, 0.3);
         padding: 0.3rem 0.9rem;
         border-radius: 999px;
         font-size: 0.8rem;
@@ -172,7 +173,7 @@
           transform 0.15s;
       }
       .btn-secondary:hover {
-        background: #2d3250;
+        background: #2a2a2a;
         transform: translateY(-1px);
       }
 
@@ -224,7 +225,7 @@
           transform 0.2s;
       }
       .feature-card:hover {
-        border-color: rgba(108, 99, 255, 0.4);
+        border-color: rgba(255, 107, 107, 0.4);
         transform: translateY(-2px);
       }
       .material-symbols-rounded {
@@ -284,7 +285,7 @@
           transform 0.2s;
       }
       .download-card:hover {
-        border-color: rgba(108, 99, 255, 0.5);
+        border-color: rgba(255, 107, 107, 0.5);
         transform: translateY(-2px);
       }
       .platform-name {
@@ -369,7 +370,7 @@
         line-height: 1.6;
       }
       .install-card code {
-        background: rgba(108, 99, 255, 0.12);
+        background: rgba(255, 107, 107, 0.12);
         color: var(--accent);
         padding: 0.15rem 0.4rem;
         border-radius: 4px;
@@ -404,10 +405,10 @@
       .playstore-banner {
         background: linear-gradient(
           135deg,
-          rgba(108, 99, 255, 0.12),
-          rgba(108, 99, 255, 0.04)
+          rgba(255, 107, 107, 0.12),
+          rgba(255, 107, 107, 0.04)
         );
-        border: 1px solid rgba(108, 99, 255, 0.3);
+        border: 1px solid rgba(255, 107, 107, 0.3);
         border-radius: var(--radius);
         padding: 1.5rem;
         margin-top: 2rem;
@@ -424,7 +425,7 @@
       }
       .playstore-banner .badge {
         display: inline-block;
-        background: rgba(108, 99, 255, 0.2);
+        background: rgba(255, 107, 107, 0.2);
         color: var(--accent);
         padding: 0.2rem 0.7rem;
         border-radius: 999px;
@@ -654,8 +655,9 @@
                 <strong>RecordTor</strong> to <strong>Applications</strong>
               </li>
               <li>
-                On first launch, right-click the app →
-                <strong>Open</strong> (see unsigned app note below)
+                After installing, run in Terminal:<br />
+                <code>xattr -cr /Applications/RecordTor.app</code><br />
+                Then open the app normally
               </li>
             </ol>
           </div>
@@ -769,11 +771,10 @@
           </p>
           <ul>
             <li>
-              <strong>macOS:</strong> Right-click the app →
-              <strong>Open</strong>, then click <strong>Open</strong> in the
-              dialog. You only need to do this once. Alternatively, go to
-              <em>System Settings → Privacy &amp; Security</em> and click
-              <strong>Open Anyway</strong>.
+              <strong>macOS:</strong> After installing, open Terminal and run:
+              <code>xattr -cr /Applications/RecordTor.app</code> — this removes
+              the quarantine flag so the app can launch normally. You only need
+              to do this once.
             </li>
             <li>
               <strong>Windows:</strong> When SmartScreen appears, click
