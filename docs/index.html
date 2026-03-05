@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RecordTor — Torrent Client with Built-in Video Streaming</title>
   <meta name="description" content="A modern, lightweight torrent client with built-in video streaming. Download and watch simultaneously on desktop and Android." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -169,10 +172,23 @@
       transition: border-color 0.2s, transform 0.2s;
     }
     .feature-card:hover { border-color: rgba(108,99,255,0.4); transform: translateY(-2px); }
+    .material-symbols-rounded {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      font-size: 1.5rem;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.75rem;
+      line-height: 1;
+    }
     .feature-icon {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       margin-bottom: 0.75rem;
       display: block;
+    }
+    .platform-icon .material-symbols-rounded {
+      font-size: 2rem;
+      margin-bottom: 0;
+      display: inline;
     }
     .feature-card h3 {
       font-size: 0.95rem;
@@ -205,7 +221,6 @@
       transition: border-color 0.2s, transform 0.2s;
     }
     .download-card:hover { border-color: rgba(108,99,255,0.5); transform: translateY(-2px); }
-    .platform-icon { font-size: 2rem; }
     .platform-name {
       font-weight: 700;
       font-size: 0.95rem;
@@ -301,62 +316,62 @@
 
       <div class="features-grid">
         <div class="feature-card">
-          <span class="feature-icon">▶️</span>
+          <span class="material-symbols-rounded">play_circle</span>
           <h3>Stream While Downloading</h3>
           <p>Start watching video files the moment a download begins — no need to wait.</p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon">🎬</span>
+          <span class="material-symbols-rounded">smart_display</span>
           <h3>Built-in Video Player</h3>
           <p>Watch your downloads without leaving the app. Playback progress is saved automatically.</p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon">🧲</span>
+          <span class="material-symbols-rounded">link</span>
           <h3>Magnet & .torrent Support</h3>
           <p>Paste magnet links or open <code>.torrent</code> files to start downloading instantly.</p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon">⚖️</span>
+          <span class="material-symbols-rounded">low_priority</span>
           <h3>File Priority Control</h3>
           <p>Choose which files to download and assign high, medium, or low priority per file.</p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon">⏸️</span>
+          <span class="material-symbols-rounded">pause_circle</span>
           <h3>Pause & Resume</h3>
           <p>Pause and resume individual torrents at any time without losing progress.</p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon">🌱</span>
+          <span class="material-symbols-rounded">create_new_folder</span>
           <h3>Create Torrents</h3>
           <p>Generate <code>.torrent</code> files from your local directories and share them.</p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon">🚀</span>
+          <span class="material-symbols-rounded">speed</span>
           <h3>Speed Limits</h3>
           <p>Set download and upload speed caps in MB/s to keep bandwidth under control.</p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon">🔗</span>
+          <span class="material-symbols-rounded">open_in_new</span>
           <h3>Deep Linking</h3>
           <p>Click a magnet link in your browser and RecordTor opens it automatically.</p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon">🌗</span>
+          <span class="material-symbols-rounded">dark_mode</span>
           <h3>Dark & Light Theme</h3>
           <p>Switch between dark and light mode to match your preference.</p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon">🧩</span>
+          <span class="material-symbols-rounded">view_comfy</span>
           <h3>Piece Visualizer</h3>
           <p>See exactly which pieces of a torrent have been downloaded in real time.</p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon">🔔</span>
+          <span class="material-symbols-rounded">notifications</span>
           <h3>Notifications</h3>
           <p>Get a system notification when a download finishes.</p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon">📡</span>
+          <span class="material-symbols-rounded">router</span>
           <h3>Network Settings</h3>
           <p>Configure port, UPnP, DHT, PEX, and max connections from the settings panel.</p>
         </div>
@@ -384,12 +399,12 @@
 
   <script>
     const PLATFORMS = [
-      { id: 'macos',   icon: '🍎', name: 'macOS',           match: a => a.endsWith('.dmg') },
-      { id: 'win-exe', icon: '🪟', name: 'Windows (Setup)', match: a => a.endsWith('-setup.exe') },
-      { id: 'win-msi', icon: '🪟', name: 'Windows (MSI)',   match: a => a.endsWith('.msi') },
-      { id: 'android', icon: '🤖', name: 'Android',         match: a => a.endsWith('.apk') },
-      { id: 'linux-ai',icon: '🐧', name: 'Linux (AppImage)',match: a => a.endsWith('.AppImage') },
-      { id: 'linux-deb',icon:'🐧', name: 'Linux (Debian)',  match: a => a.endsWith('.deb') },
+      { id: 'macos',    icon: 'laptop_mac',  name: 'macOS',            match: a => a.endsWith('.dmg') },
+      { id: 'win-exe',  icon: 'window',      name: 'Windows (Setup)',  match: a => a.endsWith('-setup.exe') },
+      { id: 'win-msi',  icon: 'window',      name: 'Windows (MSI)',    match: a => a.endsWith('.msi') },
+      { id: 'android',  icon: 'android',     name: 'Android',          match: a => a.endsWith('.apk') },
+      { id: 'linux-ai', icon: 'terminal',    name: 'Linux (AppImage)', match: a => a.endsWith('.AppImage') },
+      { id: 'linux-deb',icon: 'terminal',    name: 'Linux (Debian)',   match: a => a.endsWith('.deb') },
     ];
 
     async function loadDownloads() {
@@ -408,7 +423,7 @@
           const size = (asset.size / 1024 / 1024).toFixed(1) + ' MB';
           return `
             <div class="download-card">
-              <span class="platform-icon">${p.icon}</span>
+              <span class="material-symbols-rounded" style="font-size:2rem;margin-bottom:0">${p.icon}</span>
               <span class="platform-name">${p.name}</span>
               <span class="platform-file">${asset.name}</span>
               <span style="font-size:0.75rem;color:var(--text-muted)">${size}</span>
