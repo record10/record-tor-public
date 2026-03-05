@@ -225,8 +225,31 @@
       font-weight: 700;
       width: 100%;
       transition: background 0.2s;
+      display: block;
+      text-align: center;
     }
     .download-btn:hover { background: var(--accent-hover); }
+    .download-btn.disabled {
+      background: var(--bg3);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .release-version {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    .release-version span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .download-loading {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 2rem 0;
+    }
 
     /* FOOTER */
     footer {
@@ -347,41 +370,63 @@
       <div class="section-label">Get RecordTor</div>
       <h2 class="section-title">Available on every platform</h2>
       <p class="section-sub">Download the latest release for your operating system.</p>
+      <p class="release-version" id="release-version">Fetching latest release…</p>
 
-      <div class="download-grid">
-        <div class="download-card">
-          <span class="platform-icon">🍎</span>
-          <span class="platform-name">macOS</span>
-          <span class="platform-file">RecordTor_x64.dmg</span>
-          <a class="download-btn" href="https://github.com/Record10/record-tor-public/releases/latest/download/RecordTor_x64.dmg">Download</a>
-        </div>
-        <div class="download-card">
-          <span class="platform-icon">🪟</span>
-          <span class="platform-name">Windows</span>
-          <span class="platform-file">RecordTor_x64-setup.exe</span>
-          <a class="download-btn" href="https://github.com/Record10/record-tor-public/releases/latest/download/RecordTor_x64-setup.exe">Download</a>
-        </div>
-        <div class="download-card">
-          <span class="platform-icon">🐧</span>
-          <span class="platform-name">Linux (AppImage)</span>
-          <span class="platform-file">record-tor_amd64.AppImage</span>
-          <a class="download-btn" href="https://github.com/Record10/record-tor-public/releases/latest/download/record-tor_amd64.AppImage">Download</a>
-        </div>
-        <div class="download-card">
-          <span class="platform-icon">🐧</span>
-          <span class="platform-name">Linux (Debian)</span>
-          <span class="platform-file">record-tor_amd64.deb</span>
-          <a class="download-btn" href="https://github.com/Record10/record-tor-public/releases/latest/download/record-tor_amd64.deb">Download</a>
-        </div>
-        <div class="download-card">
-          <span class="platform-icon">🤖</span>
-          <span class="platform-name">Android</span>
-          <span class="platform-file">RecordTor.apk</span>
-          <a class="download-btn" href="https://github.com/Record10/record-tor-public/releases/latest/download/RecordTor.apk">Download</a>
-        </div>
+      <div id="download-grid" class="download-grid">
+        <p class="download-loading">Loading download links…</p>
       </div>
+
+      <p style="margin-top:1.5rem; font-size:0.85rem; color:var(--text-muted); text-align:center;">
+        All releases &rarr; <a href="https://github.com/Record10/record-tor-public/releases" target="_blank" style="color:var(--accent);">GitHub Releases</a>
+      </p>
     </div>
   </section>
+
+  <script>
+    const PLATFORMS = [
+      { id: 'macos',   icon: '🍎', name: 'macOS',           match: a => a.endsWith('.dmg') },
+      { id: 'win-exe', icon: '🪟', name: 'Windows (Setup)', match: a => a.endsWith('-setup.exe') },
+      { id: 'win-msi', icon: '🪟', name: 'Windows (MSI)',   match: a => a.endsWith('.msi') },
+      { id: 'android', icon: '🤖', name: 'Android',         match: a => a.endsWith('.apk') },
+      { id: 'linux-ai',icon: '🐧', name: 'Linux (AppImage)',match: a => a.endsWith('.AppImage') },
+      { id: 'linux-deb',icon:'🐧', name: 'Linux (Debian)',  match: a => a.endsWith('.deb') },
+    ];
+
+    async function loadDownloads() {
+      const grid = document.getElementById('download-grid');
+      const versionEl = document.getElementById('release-version');
+      try {
+        const res = await fetch('https://api.github.com/repos/Record10/record-tor-public/releases/latest');
+        if (!res.ok) throw new Error('API error');
+        const release = await res.json();
+        const tag = release.tag_name ?? '';
+        versionEl.innerHTML = `Latest release: <span>${tag}</span> &mdash; <a href="${release.html_url}" target="_blank" style="color:var(--accent)">Release notes</a>`;
+
+        const cards = PLATFORMS.map(p => {
+          const asset = release.assets.find(a => p.match(a.name));
+          if (!asset) return '';
+          const size = (asset.size / 1024 / 1024).toFixed(1) + ' MB';
+          return `
+            <div class="download-card">
+              <span class="platform-icon">${p.icon}</span>
+              <span class="platform-name">${p.name}</span>
+              <span class="platform-file">${asset.name}</span>
+              <span style="font-size:0.75rem;color:var(--text-muted)">${size}</span>
+              <a class="download-btn" href="${asset.browser_download_url}">Download</a>
+            </div>`;
+        }).filter(Boolean);
+
+        grid.innerHTML = cards.length
+          ? cards.join('')
+          : '<p class="download-loading">No assets found in the latest release.</p>';
+      } catch {
+        versionEl.textContent = '';
+        grid.innerHTML = `<p class="download-loading">Could not load releases. <a href="https://github.com/Record10/record-tor-public/releases/latest" target="_blank" style="color:var(--accent)">Download from GitHub</a>.</p>`;
+      }
+    }
+
+    loadDownloads();
+  </script>
 
   <!-- FOOTER -->
   <footer>
