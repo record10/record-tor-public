@@ -1,427 +1,867 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RecordTor — Torrent Client with Built-in Video Streaming</title>
-  <meta name="description" content="A modern, lightweight torrent client with built-in video streaming. Download and watch simultaneously on desktop and Android." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RecordTor — Torrent Client with Built-in Video Streaming</title>
+    <meta
+      name="description"
+      content="A modern, lightweight torrent client with built-in video streaming. Download and watch simultaneously on desktop and Android."
+    />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236c63ff'/%3E%3Cstop offset='100%25' stop-color='%23574fd6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='url(%23g)'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-family='Arial,sans-serif' font-weight='800' font-size='52' fill='white'%3ERT%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    :root {
-      --bg: #0f1117;
-      --bg2: #1a1d27;
-      --bg3: #22263a;
-      --accent: #6c63ff;
-      --accent-hover: #574fd6;
-      --text: #e8eaf6;
-      --text-muted: #8b8fa8;
-      --border: #2a2d3e;
-      --radius: 12px;
-    }
+      :root {
+        --bg: #0f1117;
+        --bg2: #1a1d27;
+        --bg3: #22263a;
+        --accent: #6c63ff;
+        --accent-hover: #574fd6;
+        --text: #e8eaf6;
+        --text-muted: #8b8fa8;
+        --border: #2a2d3e;
+        --radius: 12px;
+      }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
 
-    a { color: inherit; text-decoration: none; }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
 
-    /* NAV */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 2rem;
-      height: 60px;
-      background: rgba(15, 17, 23, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-logo {
-      font-size: 1.1rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--text);
-    }
-    .nav-logo span { color: var(--accent); }
-    .nav-links {
-      display: flex;
-      gap: 1.5rem;
-      list-style: none;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-    .nav-links a:hover { color: var(--text); }
-    .nav-cta {
-      background: var(--accent);
-      color: #fff;
-      padding: 0.45rem 1.1rem;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      font-weight: 600;
-      transition: background 0.2s;
-    }
-    .nav-cta:hover { background: var(--accent-hover); }
+      /* NAV */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+        height: 60px;
+        background: rgba(15, 17, 23, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-logo {
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--text);
+      }
+      .nav-logo span {
+        color: var(--accent);
+      }
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+      .nav-links a:hover {
+        color: var(--text);
+      }
+      .nav-cta {
+        background: var(--accent);
+        color: #fff;
+        padding: 0.45rem 1.1rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: background 0.2s;
+      }
+      .nav-cta:hover {
+        background: var(--accent-hover);
+      }
 
-    /* HERO */
-    .hero {
-      text-align: center;
-      padding: 7rem 1.5rem 5rem;
-      background: radial-gradient(ellipse 70% 50% at 50% -10%, rgba(108,99,255,0.18), transparent);
-    }
-    .hero-badge {
-      display: inline-block;
-      background: rgba(108,99,255,0.15);
-      color: var(--accent);
-      border: 1px solid rgba(108,99,255,0.3);
-      padding: 0.3rem 0.9rem;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      margin-bottom: 1.5rem;
-    }
-    .hero h1 {
-      font-size: clamp(2.4rem, 6vw, 4rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      margin-bottom: 1.25rem;
-    }
-    .hero h1 span { color: var(--accent); }
-    .hero p {
-      font-size: 1.15rem;
-      color: var(--text-muted);
-      max-width: 520px;
-      margin: 0 auto 2.5rem;
-    }
-    .hero-actions {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-      padding: 0.75rem 1.75rem;
-      border-radius: var(--radius);
-      font-weight: 700;
-      font-size: 0.95rem;
-      transition: background 0.2s, transform 0.15s;
-    }
-    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
-    .btn-secondary {
-      background: var(--bg3);
-      color: var(--text);
-      padding: 0.75rem 1.75rem;
-      border-radius: var(--radius);
-      font-weight: 600;
-      font-size: 0.95rem;
-      border: 1px solid var(--border);
-      transition: background 0.2s, transform 0.15s;
-    }
-    .btn-secondary:hover { background: #2d3250; transform: translateY(-1px); }
+      /* HERO */
+      .hero {
+        text-align: center;
+        padding: 7rem 1.5rem 5rem;
+        background: radial-gradient(
+          ellipse 70% 50% at 50% -10%,
+          rgba(108, 99, 255, 0.18),
+          transparent
+        );
+      }
+      .hero-badge {
+        display: inline-block;
+        background: rgba(108, 99, 255, 0.15);
+        color: var(--accent);
+        border: 1px solid rgba(108, 99, 255, 0.3);
+        padding: 0.3rem 0.9rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+      }
+      .hero h1 {
+        font-size: clamp(2.4rem, 6vw, 4rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        margin-bottom: 1.25rem;
+      }
+      .hero h1 span {
+        color: var(--accent);
+      }
+      .hero p {
+        font-size: 1.15rem;
+        color: var(--text-muted);
+        max-width: 520px;
+        margin: 0 auto 2.5rem;
+      }
+      .hero-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        padding: 0.75rem 1.75rem;
+        border-radius: var(--radius);
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition:
+          background 0.2s,
+          transform 0.15s;
+      }
+      .btn-primary:hover {
+        background: var(--accent-hover);
+        transform: translateY(-1px);
+      }
+      .btn-secondary {
+        background: var(--bg3);
+        color: var(--text);
+        padding: 0.75rem 1.75rem;
+        border-radius: var(--radius);
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: 1px solid var(--border);
+        transition:
+          background 0.2s,
+          transform 0.15s;
+      }
+      .btn-secondary:hover {
+        background: #2d3250;
+        transform: translateY(-1px);
+      }
 
-    /* SECTION */
-    section { padding: 5rem 1.5rem; }
-    .container { max-width: 1000px; margin: 0 auto; }
-    .section-label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.75rem;
-    }
-    .section-title {
-      font-size: clamp(1.6rem, 4vw, 2.2rem);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 1rem;
-    }
-    .section-sub {
-      color: var(--text-muted);
-      font-size: 1rem;
-      max-width: 520px;
-      margin-bottom: 3rem;
-    }
+      /* SECTION */
+      section {
+        padding: 5rem 1.5rem;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      .section-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+      }
+      .section-title {
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin-bottom: 1rem;
+      }
+      .section-sub {
+        color: var(--text-muted);
+        font-size: 1rem;
+        max-width: 520px;
+        margin-bottom: 3rem;
+      }
 
-    /* FEATURES */
-    #features { background: var(--bg2); }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 1.25rem;
-    }
-    .feature-card {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .feature-card:hover { border-color: rgba(108,99,255,0.4); transform: translateY(-2px); }
-    .material-symbols-rounded {
-      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-      font-size: 1.5rem;
-      color: var(--accent);
-      display: block;
-      margin-bottom: 0.75rem;
-      line-height: 1;
-    }
-    .feature-icon {
-      font-size: 1.5rem;
-      margin-bottom: 0.75rem;
-      display: block;
-    }
-    .platform-icon .material-symbols-rounded {
-      font-size: 2rem;
-      margin-bottom: 0;
-      display: inline;
-    }
-    .feature-card h3 {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-    }
-    .feature-card p {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
+      /* FEATURES */
+      #features {
+        background: var(--bg2);
+      }
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+        gap: 1.25rem;
+      }
+      .feature-card {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        transition:
+          border-color 0.2s,
+          transform 0.2s;
+      }
+      .feature-card:hover {
+        border-color: rgba(108, 99, 255, 0.4);
+        transform: translateY(-2px);
+      }
+      .material-symbols-rounded {
+        font-variation-settings:
+          "FILL" 1,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+        font-size: 1.5rem;
+        color: var(--accent);
+        display: block;
+        margin-bottom: 0.75rem;
+        line-height: 1;
+      }
+      .feature-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+        display: block;
+      }
+      .platform-icon .material-symbols-rounded {
+        font-size: 2rem;
+        margin-bottom: 0;
+        display: inline;
+      }
+      .feature-card h3 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+      }
+      .feature-card p {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+      }
 
-    /* DOWNLOAD */
-    #download { background: var(--bg); }
-    .download-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-    }
-    .download-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem 1.25rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
-      text-align: center;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .download-card:hover { border-color: rgba(108,99,255,0.5); transform: translateY(-2px); }
-    .platform-name {
-      font-weight: 700;
-      font-size: 0.95rem;
-    }
-    .platform-file {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      font-family: monospace;
-    }
-    .download-btn {
-      margin-top: auto;
-      background: var(--accent);
-      color: #fff;
-      padding: 0.5rem 1.25rem;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      width: 100%;
-      transition: background 0.2s;
-      display: block;
-      text-align: center;
-    }
-    .download-btn:hover { background: var(--accent-hover); }
-    .download-btn.disabled {
-      background: var(--bg3);
-      color: var(--text-muted);
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-    .release-version {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-    }
-    .release-version span {
-      color: var(--accent);
-      font-weight: 600;
-    }
-    .download-loading {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      text-align: center;
-      padding: 2rem 0;
-    }
+      /* DOWNLOAD */
+      #download {
+        background: var(--bg);
+      }
+      .download-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+      .download-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        text-align: center;
+        transition:
+          border-color 0.2s,
+          transform 0.2s;
+      }
+      .download-card:hover {
+        border-color: rgba(108, 99, 255, 0.5);
+        transform: translateY(-2px);
+      }
+      .platform-name {
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+      .platform-file {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-family: monospace;
+      }
+      .download-btn {
+        margin-top: auto;
+        background: var(--accent);
+        color: #fff;
+        padding: 0.5rem 1.25rem;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        width: 100%;
+        transition: background 0.2s;
+        display: block;
+        text-align: center;
+      }
+      .download-btn:hover {
+        background: var(--accent-hover);
+      }
+      .download-btn.disabled {
+        background: var(--bg3);
+        color: var(--text-muted);
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      .release-version {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+      }
+      .release-version span {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .download-loading {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        text-align: center;
+        padding: 2rem 0;
+      }
 
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 1.5rem;
-      text-align: center;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-    footer a { color: var(--accent); }
-    footer a:hover { text-decoration: underline; }
+      /* INSTALL INFO */
+      #install {
+        background: var(--bg2);
+      }
+      .install-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.25rem;
+      }
+      .install-card {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+      }
+      .install-card h3 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .install-card ol {
+        padding-left: 1.25rem;
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        line-height: 1.7;
+      }
+      .install-card p {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+      }
+      .install-card code {
+        background: rgba(108, 99, 255, 0.12);
+        color: var(--accent);
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.82rem;
+      }
+      .notice-box {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.5rem;
+        margin-top: 2rem;
+      }
+      .notice-box h3 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .notice-box p,
+      .notice-box ul {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+      }
+      .notice-box ul {
+        padding-left: 1.25rem;
+        margin-top: 0.5rem;
+      }
+      .playstore-banner {
+        background: linear-gradient(
+          135deg,
+          rgba(108, 99, 255, 0.12),
+          rgba(108, 99, 255, 0.04)
+        );
+        border: 1px solid rgba(108, 99, 255, 0.3);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        margin-top: 2rem;
+        text-align: center;
+      }
+      .playstore-banner h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+      }
+      .playstore-banner p {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+      }
+      .playstore-banner .badge {
+        display: inline-block;
+        background: rgba(108, 99, 255, 0.2);
+        color: var(--accent);
+        padding: 0.2rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
 
-    @media (max-width: 600px) {
-      nav { padding: 0 1rem; }
-      .nav-links { display: none; }
-    }
-  </style>
-</head>
-<body>
+      /* FOOTER */
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 2rem 1.5rem;
+        text-align: center;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+      footer a {
+        color: var(--accent);
+      }
+      footer a:hover {
+        text-decoration: underline;
+      }
 
-  <!-- NAV -->
-  <nav>
-    <span class="nav-logo">Record<span>Tor</span></span>
-    <ul class="nav-links">
-      <li><a href="#features">Features</a></li>
-      <li><a href="#download">Download</a></li>
-      <li><a href="https://github.com/Record10/record-tor-public" target="_blank">GitHub</a></li>
-    </ul>
-    <a class="nav-cta" href="#download">Download</a>
-  </nav>
+      @media (max-width: 600px) {
+        nav {
+          padding: 0 1rem;
+        }
+        .nav-links {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <span class="nav-logo">Record<span>Tor</span></span>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#download">Download</a></li>
+        <li><a href="#install">Install</a></li>
+        <li>
+          <a
+            href="https://github.com/Record10/record-tor-public"
+            target="_blank"
+            >GitHub</a
+          >
+        </li>
+      </ul>
+      <a class="nav-cta" href="#download">Download</a>
+    </nav>
 
-  <!-- HERO -->
-  <header class="hero">
-    <div class="hero-badge">Open · Cross-Platform · Free</div>
-    <h1>Torrent client with<br /><span>built-in video streaming</span></h1>
-    <p>Download and watch simultaneously. No waiting for the full file — RecordTor streams as it downloads.</p>
-    <div class="hero-actions">
-      <a class="btn-primary" href="#download">Download for free</a>
-      <a class="btn-secondary" href="https://github.com/Record10/record-tor-public" target="_blank">View on GitHub</a>
-    </div>
-  </header>
-
-  <!-- FEATURES -->
-  <section id="features">
-    <div class="container">
-      <div class="section-label">What's inside</div>
-      <h2 class="section-title">Everything you need, nothing you don't</h2>
-      <p class="section-sub">RecordTor is fast, focused, and built for both desktop and mobile.</p>
-
-      <div class="features-grid">
-        <div class="feature-card">
-          <span class="material-symbols-rounded">play_circle</span>
-          <h3>Stream While Downloading</h3>
-          <p>Start watching video files the moment a download begins — no need to wait.</p>
-        </div>
-        <div class="feature-card">
-          <span class="material-symbols-rounded">smart_display</span>
-          <h3>Built-in Video Player</h3>
-          <p>Watch your downloads without leaving the app. Playback progress is saved automatically.</p>
-        </div>
-        <div class="feature-card">
-          <span class="material-symbols-rounded">link</span>
-          <h3>Magnet & .torrent Support</h3>
-          <p>Paste magnet links or open <code>.torrent</code> files to start downloading instantly.</p>
-        </div>
-        <div class="feature-card">
-          <span class="material-symbols-rounded">low_priority</span>
-          <h3>File Priority Control</h3>
-          <p>Choose which files to download and assign high, medium, or low priority per file.</p>
-        </div>
-        <div class="feature-card">
-          <span class="material-symbols-rounded">pause_circle</span>
-          <h3>Pause & Resume</h3>
-          <p>Pause and resume individual torrents at any time without losing progress.</p>
-        </div>
-        <div class="feature-card">
-          <span class="material-symbols-rounded">create_new_folder</span>
-          <h3>Create Torrents</h3>
-          <p>Generate <code>.torrent</code> files from your local directories and share them.</p>
-        </div>
-        <div class="feature-card">
-          <span class="material-symbols-rounded">speed</span>
-          <h3>Speed Limits</h3>
-          <p>Set download and upload speed caps in MB/s to keep bandwidth under control.</p>
-        </div>
-        <div class="feature-card">
-          <span class="material-symbols-rounded">open_in_new</span>
-          <h3>Deep Linking</h3>
-          <p>Click a magnet link in your browser and RecordTor opens it automatically.</p>
-        </div>
-        <div class="feature-card">
-          <span class="material-symbols-rounded">dark_mode</span>
-          <h3>Dark & Light Theme</h3>
-          <p>Switch between dark and light mode to match your preference.</p>
-        </div>
-        <div class="feature-card">
-          <span class="material-symbols-rounded">view_comfy</span>
-          <h3>Piece Visualizer</h3>
-          <p>See exactly which pieces of a torrent have been downloaded in real time.</p>
-        </div>
-        <div class="feature-card">
-          <span class="material-symbols-rounded">notifications</span>
-          <h3>Notifications</h3>
-          <p>Get a system notification when a download finishes.</p>
-        </div>
-        <div class="feature-card">
-          <span class="material-symbols-rounded">router</span>
-          <h3>Network Settings</h3>
-          <p>Configure port, UPnP, DHT, PEX, and max connections from the settings panel.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- DOWNLOAD -->
-  <section id="download">
-    <div class="container">
-      <div class="section-label">Get RecordTor</div>
-      <h2 class="section-title">Available on every platform</h2>
-      <p class="section-sub">Download the latest release for your operating system.</p>
-      <p class="release-version" id="release-version">Fetching latest release…</p>
-
-      <div id="download-grid" class="download-grid">
-        <p class="download-loading">Loading download links…</p>
-      </div>
-
-      <p style="margin-top:1.5rem; font-size:0.85rem; color:var(--text-muted); text-align:center;">
-        All releases &rarr; <a href="https://github.com/Record10/record-tor-public/releases" target="_blank" style="color:var(--accent);">GitHub Releases</a>
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-badge">Open · Cross-Platform · Free</div>
+      <h1>Torrent client with<br /><span>built-in video streaming</span></h1>
+      <p>
+        Download and watch simultaneously. No waiting for the full file —
+        RecordTor streams as it downloads.
       </p>
-    </div>
-  </section>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#download">Download for free</a>
+        <a
+          class="btn-secondary"
+          href="https://github.com/Record10/record-tor-public"
+          target="_blank"
+          >View on GitHub</a
+        >
+      </div>
+    </header>
 
-  <script>
-    const PLATFORMS = [
-      { id: 'macos',    icon: 'laptop_mac',  name: 'macOS',            match: a => a.endsWith('.dmg') },
-      { id: 'win-exe',  icon: 'window',      name: 'Windows (Setup)',  match: a => a.endsWith('-setup.exe') },
-      { id: 'win-msi',  icon: 'window',      name: 'Windows (MSI)',    match: a => a.endsWith('.msi') },
-      { id: 'android',  icon: 'android',     name: 'Android',          match: a => a.endsWith('.apk') },
-      { id: 'linux-ai', icon: 'terminal',    name: 'Linux (AppImage)', match: a => a.endsWith('.AppImage') },
-      { id: 'linux-deb',icon: 'terminal',    name: 'Linux (Debian)',   match: a => a.endsWith('.deb') },
-    ];
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="container">
+        <div class="section-label">What's inside</div>
+        <h2 class="section-title">Everything you need, nothing you don't</h2>
+        <p class="section-sub">
+          RecordTor is fast, focused, and built for both desktop and mobile.
+        </p>
 
-    async function loadDownloads() {
-      const grid = document.getElementById('download-grid');
-      const versionEl = document.getElementById('release-version');
-      try {
-        const res = await fetch('https://api.github.com/repos/Record10/record-tor-public/releases/latest');
-        if (!res.ok) throw new Error('API error');
-        const release = await res.json();
-        const tag = release.tag_name ?? '';
-        versionEl.innerHTML = `Latest release: <span>${tag}</span> &mdash; <a href="${release.html_url}" target="_blank" style="color:var(--accent)">Release notes</a>`;
+        <div class="features-grid">
+          <div class="feature-card">
+            <span class="material-symbols-rounded">play_circle</span>
+            <h3>Stream While Downloading</h3>
+            <p>
+              Start watching video files the moment a download begins — no need
+              to wait.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="material-symbols-rounded">smart_display</span>
+            <h3>Built-in Video Player</h3>
+            <p>
+              Watch your downloads without leaving the app. Playback progress is
+              saved automatically.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="material-symbols-rounded">link</span>
+            <h3>Magnet & .torrent Support</h3>
+            <p>
+              Paste magnet links or open <code>.torrent</code> files to start
+              downloading instantly.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="material-symbols-rounded">low_priority</span>
+            <h3>File Priority Control</h3>
+            <p>
+              Choose which files to download and assign high, medium, or low
+              priority per file.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="material-symbols-rounded">pause_circle</span>
+            <h3>Pause & Resume</h3>
+            <p>
+              Pause and resume individual torrents at any time without losing
+              progress.
+            </p>
+          </div>
 
-        const cards = PLATFORMS.map(p => {
-          const asset = release.assets.find(a => p.match(a.name));
-          if (!asset) return '';
-          const size = (asset.size / 1024 / 1024).toFixed(1) + ' MB';
-          return `
+          <div class="feature-card">
+            <span class="material-symbols-rounded">speed</span>
+            <h3>Speed Limits</h3>
+            <p>
+              Set download and upload speed caps in MB/s to keep bandwidth under
+              control.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="material-symbols-rounded">open_in_new</span>
+            <h3>Deep Linking</h3>
+            <p>
+              Click a magnet link in your browser and RecordTor opens it
+              automatically.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="material-symbols-rounded">dark_mode</span>
+            <h3>Dark & Light Theme</h3>
+            <p>Switch between dark and light mode to match your preference.</p>
+          </div>
+          <div class="feature-card">
+            <span class="material-symbols-rounded">view_comfy</span>
+            <h3>Piece Visualizer</h3>
+            <p>
+              See exactly which pieces of a torrent have been downloaded in real
+              time.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="material-symbols-rounded">notifications</span>
+            <h3>Notifications</h3>
+            <p>Get a system notification when a download finishes.</p>
+          </div>
+          <div class="feature-card">
+            <span class="material-symbols-rounded">router</span>
+            <h3>Network Settings</h3>
+            <p>
+              Configure port, UPnP, DHT, PEX, and max connections from the
+              settings panel.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOWNLOAD -->
+    <section id="download">
+      <div class="container">
+        <div class="section-label">Get RecordTor</div>
+        <h2 class="section-title">Available on every platform</h2>
+        <p class="section-sub">
+          Download the latest release for your operating system.
+        </p>
+        <p class="release-version" id="release-version">
+          Fetching latest release…
+        </p>
+
+        <div id="download-grid" class="download-grid">
+          <p class="download-loading">Loading download links…</p>
+        </div>
+
+        <p
+          style="
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+          "
+        >
+          All releases &rarr;
+          <a
+            href="https://github.com/Record10/record-tor-public/releases"
+            target="_blank"
+            style="color: var(--accent)"
+            >GitHub Releases</a
+          >
+        </p>
+      </div>
+    </section>
+
+    <!-- INSTALLATION -->
+    <section id="install">
+      <div class="container">
+        <div class="section-label">Installation Guide</div>
+        <h2 class="section-title">How to install on each platform</h2>
+        <p class="section-sub">
+          Quick commands and steps to get RecordTor running on your system.
+        </p>
+
+        <div class="install-cards">
+          <div class="install-card">
+            <h3>
+              <span class="material-symbols-rounded" style="font-size: 1.25rem"
+                >laptop_mac</span
+              >
+              macOS
+            </h3>
+            <ol>
+              <li>Download the <code>.dmg</code> file</li>
+              <li>
+                Open the <code>.dmg</code> and drag
+                <strong>RecordTor</strong> to <strong>Applications</strong>
+              </li>
+              <li>
+                On first launch, right-click the app →
+                <strong>Open</strong> (see unsigned app note below)
+              </li>
+            </ol>
+          </div>
+
+          <div class="install-card">
+            <h3>
+              <span class="material-symbols-rounded" style="font-size: 1.25rem"
+                >window</span
+              >
+              Windows (Setup)
+            </h3>
+            <ol>
+              <li>Download the <code>-setup.exe</code> file</li>
+              <li>Run the installer and follow the prompts</li>
+              <li>
+                If SmartScreen warns about an unknown publisher, click
+                <strong>More info</strong> → <strong>Run anyway</strong>
+              </li>
+            </ol>
+          </div>
+
+          <div class="install-card">
+            <h3>
+              <span class="material-symbols-rounded" style="font-size: 1.25rem"
+                >window</span
+              >
+              Windows (MSI)
+            </h3>
+            <ol>
+              <li>Download the <code>.msi</code> file</li>
+              <li>Double-click to run the MSI installer</li>
+              <li>
+                If SmartScreen warns about an unknown publisher, click
+                <strong>More info</strong> → <strong>Run anyway</strong>
+              </li>
+            </ol>
+          </div>
+
+          <div class="install-card">
+            <h3>
+              <span class="material-symbols-rounded" style="font-size: 1.25rem"
+                >android</span
+              >
+              Android
+            </h3>
+            <ol>
+              <li>Download the <code>.apk</code> file to your device</li>
+              <li>
+                Open the file &amp; allow installation from unknown sources when
+                prompted
+              </li>
+              <li>
+                Tap <strong>Install</strong> and then <strong>Open</strong>
+              </li>
+            </ol>
+          </div>
+
+          <div class="install-card">
+            <h3>
+              <span class="material-symbols-rounded" style="font-size: 1.25rem"
+                >terminal</span
+              >
+              Linux (AppImage)
+            </h3>
+            <ol>
+              <li>Download the <code>.AppImage</code> file</li>
+              <li>
+                Make it executable:&nbsp;
+                <code>chmod +x RecordTor*.AppImage</code>
+              </li>
+              <li>Run it:&nbsp; <code>./RecordTor*.AppImage</code></li>
+            </ol>
+          </div>
+
+          <div class="install-card">
+            <h3>
+              <span class="material-symbols-rounded" style="font-size: 1.25rem"
+                >terminal</span
+              >
+              Linux (Debian)
+            </h3>
+            <ol>
+              <li>Download the <code>.deb</code> file</li>
+              <li>
+                Install via terminal:&nbsp;
+                <code>sudo dpkg -i recordtor*.deb</code>
+              </li>
+              <li>
+                Fix dependencies if needed:&nbsp;
+                <code>sudo apt-get install -f</code>
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- UNSIGNED APP NOTICE -->
+        <div class="notice-box">
+          <h3>
+            <span
+              class="material-symbols-rounded"
+              style="font-size: 1.25rem; color: var(--accent)"
+              >shield</span
+            >
+            About Unsigned App Warnings
+          </h3>
+          <p>
+            RecordTor is not code-signed with a paid certificate, so your OS may
+            show a security warning on first launch. This is normal for
+            open-source software distributed outside app stores. The app is safe
+            to use.
+          </p>
+          <ul>
+            <li>
+              <strong>macOS:</strong> Right-click the app →
+              <strong>Open</strong>, then click <strong>Open</strong> in the
+              dialog. You only need to do this once. Alternatively, go to
+              <em>System Settings → Privacy &amp; Security</em> and click
+              <strong>Open Anyway</strong>.
+            </li>
+            <li>
+              <strong>Windows:</strong> When SmartScreen appears, click
+              <strong>More info</strong> → <strong>Run anyway</strong>.
+            </li>
+            <li>
+              <strong>Android:</strong> Enable
+              <em>Install from unknown sources</em> for your browser or file
+              manager in Settings → Security.
+            </li>
+          </ul>
+        </div>
+
+        <!-- PLAY STORE BANNER -->
+        <div class="playstore-banner">
+          <span class="badge">Coming Soon</span>
+          <h3>
+            <span
+              class="material-symbols-rounded"
+              style="font-size: 1.15rem; vertical-align: middle"
+              >storefront</span
+            >&nbsp; RecordTor on Google Play Store
+          </h3>
+          <p>
+            We're working on publishing RecordTor to the Google Play Store for
+            easier installation and automatic updates on Android. Stay tuned!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      const PLATFORMS = [
+        {
+          id: "macos",
+          icon: "laptop_mac",
+          name: "macOS",
+          match: (a) => a.endsWith(".dmg"),
+        },
+        {
+          id: "win-exe",
+          icon: "window",
+          name: "Windows (Setup)",
+          match: (a) => a.endsWith("-setup.exe"),
+        },
+        {
+          id: "win-msi",
+          icon: "window",
+          name: "Windows (MSI)",
+          match: (a) => a.endsWith(".msi"),
+        },
+        {
+          id: "android",
+          icon: "android",
+          name: "Android",
+          match: (a) => a.endsWith(".apk"),
+        },
+        {
+          id: "linux-ai",
+          icon: "terminal",
+          name: "Linux (AppImage)",
+          match: (a) => a.endsWith(".AppImage"),
+        },
+        {
+          id: "linux-deb",
+          icon: "terminal",
+          name: "Linux (Debian)",
+          match: (a) => a.endsWith(".deb"),
+        },
+      ];
+
+      async function loadDownloads() {
+        const grid = document.getElementById("download-grid");
+        const versionEl = document.getElementById("release-version");
+        try {
+          const res = await fetch(
+            "https://api.github.com/repos/Record10/record-tor-public/releases/latest",
+          );
+          if (!res.ok) throw new Error("API error");
+          const release = await res.json();
+          const tag = release.tag_name ?? "";
+          versionEl.innerHTML = `Latest release: <span>${tag}</span> &mdash; <a href="${release.html_url}" target="_blank" style="color:var(--accent)">Release notes</a>`;
+
+          const cards = PLATFORMS.map((p) => {
+            const asset = release.assets.find((a) => p.match(a.name));
+            if (!asset) return "";
+            const size = (asset.size / 1024 / 1024).toFixed(1) + " MB";
+            return `
             <div class="download-card">
               <span class="material-symbols-rounded" style="font-size:2rem;margin-bottom:0">${p.icon}</span>
               <span class="platform-name">${p.name}</span>
@@ -429,29 +869,34 @@
               <span style="font-size:0.75rem;color:var(--text-muted)">${size}</span>
               <a class="download-btn" href="${asset.browser_download_url}">Download</a>
             </div>`;
-        }).filter(Boolean);
+          }).filter(Boolean);
 
-        grid.innerHTML = cards.length
-          ? cards.join('')
-          : '<p class="download-loading">No assets found in the latest release.</p>';
-      } catch {
-        versionEl.textContent = '';
-        grid.innerHTML = `<p class="download-loading">Could not load releases. <a href="https://github.com/Record10/record-tor-public/releases/latest" target="_blank" style="color:var(--accent)">Download from GitHub</a>.</p>`;
+          grid.innerHTML = cards.length
+            ? cards.join("")
+            : '<p class="download-loading">No assets found in the latest release.</p>';
+        } catch {
+          versionEl.textContent = "";
+          grid.innerHTML = `<p class="download-loading">Could not load releases. <a href="https://github.com/Record10/record-tor-public/releases/latest" target="_blank" style="color:var(--accent)">Download from GitHub</a>.</p>`;
+        }
       }
-    }
 
-    loadDownloads();
-  </script>
+      loadDownloads();
+    </script>
 
-  <!-- FOOTER -->
-  <footer>
-    <p>RecordTor &mdash; All rights reserved. Personal use only.</p>
-    <p style="margin-top:0.5rem;">
-      <a href="https://github.com/Record10/record-tor-public" target="_blank">GitHub</a>
-      &nbsp;&middot;&nbsp;
-      <a href="https://github.com/Record10/record-tor-public/releases/latest" target="_blank">Releases</a>
-    </p>
-  </footer>
-
-</body>
+    <!-- FOOTER -->
+    <footer>
+      <p>RecordTor &mdash; All rights reserved. Personal use only.</p>
+      <p style="margin-top: 0.5rem">
+        <a href="https://github.com/Record10/record-tor-public" target="_blank"
+          >GitHub</a
+        >
+        &nbsp;&middot;&nbsp;
+        <a
+          href="https://github.com/Record10/record-tor-public/releases/latest"
+          target="_blank"
+          >Releases</a
+        >
+      </p>
+    </footer>
+  </body>
 </html>
