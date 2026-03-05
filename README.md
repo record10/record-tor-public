@@ -17,13 +17,19 @@
 - **Torrent Downloads** — Add torrents via magnet links or `.torrent` files
 - **Stream While Downloading** — Watch video content as it downloads, no need to wait
 - **Create Torrents** — Create `.torrent` files from your local directories
-- **File Priority Control** — Choose which files to download and set per-file priority (high/medium/low)
+- **File Priority Control** — Choose which files to download and set per-file priority (high / medium / low)
 - **Video Player** — Built-in video player with playback progress tracking
+- **Pause & Resume** — Pause and resume individual torrents at any time
 - **Seeding Controls** — Configure seed ratio and automatic seeding behavior
+- **Speed Limits** — Set download and upload speed caps (MB/s)
+- **Network Settings** — Configure port, UPnP, DHT, PEX, and max connections
+- **Piece Visualizer** — See exactly which pieces of a torrent have been downloaded
+- **Copy Magnet Link** — Copy the magnet link of any torrent to clipboard
 - **Dark / Light Theme** — Switch between dark and light mode
-- **Deep Linking** — Open magnet links directly from your browser via `torrent://` protocol
-- **System Tray** — Minimize to tray and keep downloading in the background
-- **Start on Boot** — Optionally launch RecordTor when your system starts
+- **Deep Linking** — Open magnet links directly from your browser via `magnet://` or `torrent://` protocol
+- **System Tray** — Minimize to tray and keep downloading in the background *(desktop)*
+- **Start on Boot** — Optionally launch RecordTor when your system starts *(desktop)*
+- **Notifications** — Get notified when downloads complete
 - **Cross-Platform** — Available for macOS, Windows, Linux, and Android
 
 ---
