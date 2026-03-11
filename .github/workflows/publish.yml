@@ -58,6 +58,11 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
+      # NASM is required by aws-lc-sys for ASM crypto optimizations on Windows
+      - name: Install NASM (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/setup-nasm@v1
+
       # ─── Build frontend ───
       - name: Install frontend dependencies
         run: npm install
@@ -144,11 +149,6 @@ jobs:
           jq 'del(.plugins."deep-link")' src-tauri/tauri.conf.json > src-tauri/tauri.conf.temp.json
           mv src-tauri/tauri.conf.temp.json src-tauri/tauri.conf.json
 
-      # ─── Unset AWS_LC_SYS_NO_ASM (only valid for debug builds, not release) ───
-      - name: Clear AWS_LC_SYS_NO_ASM for release build
-        shell: bash
-        run: echo "AWS_LC_SYS_NO_ASM=0" >> $GITHUB_ENV
-
       # ─── Desktop build (macOS or Windows) ───
       - name: Build Tauri Desktop App
         uses: tauri-apps/tauri-action@v0
@@ -156,7 +156,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          AWS_LC_SYS_NO_ASM: "0"
         with:
           tauriScript: npx tauri
           tagName: ${{ steps.release_config.outputs.tag }}
@@ -284,17 +283,12 @@ jobs:
             echo "✅ Patched build.gradle.kts"
           fi
 
-      - name: Clear AWS_LC_SYS_NO_ASM for release build
-        shell: bash
-        run: echo "AWS_LC_SYS_NO_ASM=0" >> $GITHUB_ENV
-
       - name: Build Android APK & AAB
         shell: bash
         run: |
           npx tauri android build --target aarch64
         env:
           NDK_HOME: ${{ env.NDK_HOME }}
-          AWS_LC_SYS_NO_ASM: "0"
 
       # ─── Sign the APK ───
       - name: Sign APK
