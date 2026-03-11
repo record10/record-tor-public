@@ -151,6 +151,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          # AWS_LC_SYS_NO_ASM is only valid for debug builds; override any repo/org-level setting
+          AWS_LC_SYS_NO_ASM: ""
         with:
           tauriScript: npx tauri
           tagName: ${{ steps.release_config.outputs.tag }}
