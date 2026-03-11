@@ -284,12 +284,17 @@ jobs:
             echo "✅ Patched build.gradle.kts"
           fi
 
+      - name: Clear AWS_LC_SYS_NO_ASM for release build
+        shell: bash
+        run: echo "AWS_LC_SYS_NO_ASM=0" >> $GITHUB_ENV
+
       - name: Build Android APK & AAB
         shell: bash
         run: |
           npx tauri android build --target aarch64
         env:
           NDK_HOME: ${{ env.NDK_HOME }}
+          AWS_LC_SYS_NO_ASM: "0"
 
       # ─── Sign the APK ───
       - name: Sign APK
