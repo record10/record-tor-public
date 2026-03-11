@@ -144,6 +144,11 @@ jobs:
           jq 'del(.plugins."deep-link")' src-tauri/tauri.conf.json > src-tauri/tauri.conf.temp.json
           mv src-tauri/tauri.conf.temp.json src-tauri/tauri.conf.json
 
+      # ─── Unset AWS_LC_SYS_NO_ASM (only valid for debug builds, not release) ───
+      - name: Clear AWS_LC_SYS_NO_ASM for release build
+        shell: bash
+        run: echo "AWS_LC_SYS_NO_ASM=0" >> $GITHUB_ENV
+
       # ─── Desktop build (macOS or Windows) ───
       - name: Build Tauri Desktop App
         uses: tauri-apps/tauri-action@v0
@@ -151,8 +156,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          # AWS_LC_SYS_NO_ASM is only valid for debug builds; override any repo/org-level setting
-          AWS_LC_SYS_NO_ASM: ""
+          AWS_LC_SYS_NO_ASM: "0"
         with:
           tauriScript: npx tauri
           tagName: ${{ steps.release_config.outputs.tag }}
