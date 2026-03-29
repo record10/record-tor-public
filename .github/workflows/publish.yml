@@ -266,10 +266,9 @@ jobs:
           MANIFEST="src-tauri/gen/android/app/src/main/AndroidManifest.xml"
           GRADLE="src-tauri/gen/android/app/build.gradle.kts"
 
-          # Copy custom Kotlin files from android-overrides/
-          cp src-tauri/android-overrides/MainActivity.kt "$JAVA_DIR/MainActivity.kt"
-          cp src-tauri/android-overrides/VideoPlayerActivity.kt "$JAVA_DIR/VideoPlayerActivity.kt"
-          echo "✅ Copied custom Kotlin files"
+          # Copy ALL custom Kotlin files from android-overrides/ (wildcard → future-proof)
+          cp src-tauri/android-overrides/*.kt "$JAVA_DIR/"
+          echo "✅ Copied custom Kotlin files: $(ls src-tauri/android-overrides/*.kt | xargs -I{} basename {} | tr '\n' ' ')"
 
           # Patch AndroidManifest.xml — register VideoPlayerActivity
           if ! grep -q 'VideoPlayerActivity' "$MANIFEST"; then
