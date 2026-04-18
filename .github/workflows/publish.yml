@@ -35,10 +35,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - platform: macos-13
+            target: x86_64-apple-darwin
+            ffmpeg_arch: x86_64-apple-darwin
+            label: mac-intel
           - platform: macos-latest
-            target: desktop
+            target: aarch64-apple-darwin
+            ffmpeg_arch: aarch64-apple-darwin
+            label: mac-apple-silicon
           - platform: windows-latest
             target: desktop
+            ffmpeg_arch: windows
+            label: windows
     runs-on: ${{ matrix.platform }}
 
     steps:
@@ -57,6 +65,8 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target != 'desktop' && matrix.target || '' }}
 
       # NASM is required by aws-lc-sys for ASM crypto optimizations on Windows
       - name: Install NASM (Windows)
@@ -70,7 +80,7 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-      # ─── Download FFmpeg for sidecar bundling ───
+      # ─── Download FFmpeg for sidecar bundling (one arch per job) ───
       - name: Download FFmpeg (macOS)
         if: runner.os == 'macOS'
         shell: bash
@@ -79,12 +89,11 @@ jobs:
           TMPDIR=$(mktemp -d)
           curl -L -o "$TMPDIR/ffmpeg.zip" "https://evermeet.cx/ffmpeg/getrelease/zip"
           unzip -o "$TMPDIR/ffmpeg.zip" -d "$TMPDIR"
-          # Tauri builds universal macOS binaries, provide both architectures
-          cp "$TMPDIR/ffmpeg" src-tauri/binaries/ffmpeg-x86_64-apple-darwin
-          cp "$TMPDIR/ffmpeg" src-tauri/binaries/ffmpeg-aarch64-apple-darwin
-          chmod +x src-tauri/binaries/ffmpeg-*
+          # Copy only the binary for this job's architecture
+          cp "$TMPDIR/ffmpeg" "src-tauri/binaries/ffmpeg-${{ matrix.ffmpeg_arch }}"
+          chmod +x "src-tauri/binaries/ffmpeg-${{ matrix.ffmpeg_arch }}"
           rm -rf "$TMPDIR"
-          echo "FFmpeg downloaded for macOS"
+          echo "FFmpeg downloaded for ${{ matrix.ffmpeg_arch }}"
 
       - name: Download FFmpeg (Windows)
         if: runner.os == 'Windows'
@@ -158,6 +167,7 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tauriScript: npx tauri
+          args: ${{ matrix.target != 'desktop' && format('--target {0}', matrix.target) || '' }}
           tagName: ${{ steps.release_config.outputs.tag }}
           releaseName: "Record Tor ${{ steps.release_config.outputs.tag }}"
           releaseBody: "See the assets to download this version and install."
