@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <img src="https://raw.githubusercontent.com/Record10/record-tor-public/main/public/favicon.ico" alt="RecordTor Logo" width="128">
+  <img src="docs/logo.png" alt="RecordTor Logo" width="128">
   <br>
   RecordTor
   <br>
