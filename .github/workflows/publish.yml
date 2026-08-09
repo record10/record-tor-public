@@ -76,33 +76,9 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-      # ─── Download FFmpeg for sidecar bundling (one arch per job) ───
-      - name: Download FFmpeg (macOS)
-        if: runner.os == 'macOS'
-        shell: bash
-        run: |
-          mkdir -p src-tauri/binaries
-          TMPDIR=$(mktemp -d)
-          curl -L -A "Mozilla/5.0" -o "$TMPDIR/ffmpeg.zip" "https://github.com/ffbinaries/ffbinaries-prebuilt/releases/download/v4.4.1/ffmpeg-4.4.1-osx-64.zip"
-          unzip -o "$TMPDIR/ffmpeg.zip" -d "$TMPDIR"
-          # Copy only the binary for this job's architecture
-          cp "$TMPDIR/ffmpeg" "src-tauri/binaries/ffmpeg-${{ matrix.ffmpeg_arch }}"
-          chmod +x "src-tauri/binaries/ffmpeg-${{ matrix.ffmpeg_arch }}"
-          rm -rf "$TMPDIR"
-          echo "FFmpeg downloaded for ${{ matrix.ffmpeg_arch }}"
-
-      - name: Download FFmpeg (Windows)
-        if: runner.os == 'Windows'
-        shell: bash
-        run: |
-          mkdir -p src-tauri/binaries
-          TMPDIR=$(mktemp -d)
-          curl -L -o "$TMPDIR/ffmpeg.zip" "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip"
-          unzip -o "$TMPDIR/ffmpeg.zip" -d "$TMPDIR"
-          FFMPEG_EXE=$(find "$TMPDIR" -name 'ffmpeg.exe' -type f | head -1)
-          cp "$FFMPEG_EXE" src-tauri/binaries/ffmpeg-x86_64-pc-windows-msvc.exe
-          rm -rf "$TMPDIR"
-          echo "FFmpeg downloaded for Windows"
+      # ─── Download FFmpeg for sidecar bundling ───
+      - name: Setup FFmpeg binaries
+        run: npm run ffmpeg:setup
 
       # ─── Read version from tauri.conf.json ───
       - name: Get Version
