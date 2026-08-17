@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <b>RecordTor</b> is a modern, high-performance BitTorrent client built with a <b>Rust engine (librqbit)</b> and a sleek Angular interface. Stream videos instantly while downloading, share media seamlessly over local Wi-Fi, and sync watch progress across all your devices using a unified SQLite backend.
+  <b>RecordTor</b> is a modern, high-performance BitTorrent client built with a <b>Rust engine (librqbit)</b> and a sleek Angular interface. Stream videos instantly while downloading, read PDFs & EPUBs and listen to audiobooks in-app, share media seamlessly over local Wi-Fi, and sync progress across all your devices using a unified SQLite backend.
 </p>
 
 ---
@@ -31,6 +31,7 @@
 - 📱 **Wi-Fi Media Sharing & QR Stream**: Stream your downloads directly to any phone, tablet, smart TV, or web browser on your local Wi-Fi using instant QR code pairing.
 - 🔄 **Cross-Device Progress Sync**: Watch progress (timestamps, watched status, duration) synchronizes live across Desktop and Mobile Wi-Fi clients via central Rust SQLite (`recordtor.db`).
 - 🎬 **Instant MKV Remuxing**: Real-time FFmpeg-powered audio/video remuxing for smooth in-browser playback of MKV, AVI, and MP4 formats.
+- 📚 **Built-in PDF, EPUB & Audiobook Readers**: Read PDFs, EPUBs, and listen to audiobooks right inside the app — with search, zoom, typography controls, chapter navigation, and cross-device reading position sync.
 - 🔍 **Legal Search Engine & Custom Indexers**: Built-in Internet Archive (`archive.org`) public domain search indexer + custom JSON API provider support.
 - 🚀 **Ultra-Fast Rust Core**: Powered by `librqbit` in Rust with automatic file descriptor limit expansion (65,536 open files) for maximum multi-gigabit throughput.
 - 🐛 **Direct Issue Reporting**: Integrated 1-click bug reporting directly to GitHub Issues.
@@ -45,11 +46,18 @@
 - **File Priority Control**: High, medium, low, or ignore priorities per file.
 - **Seeding & Speed Limits**: Configurable upload/download caps (MB/s) and seeding ratios.
 - **Network Controls**: Dynamic port selection, UPnP, NAT-PMP, DHT network, and Peer Exchange (PEX).
+- **Hide / Unhide Torrents**: Tuck away torrents (individually or in bulk) to keep the list clean, with a dedicated view to bring them back.
 
 ### 📺 Built-in Media Player & Streaming
 - **Picture-in-Picture (PiP)**: Keep watching in a floating mini-player while browsing.
 - **Gesture Controls**: Touch & mouse gestures for brightness, volume, and seeking.
 - **System Stay-Awake**: Optional sleep prevention to keep downloads active while streaming over Wi-Fi.
+
+### 📚 Readers & Audiobooks
+- **PDF Viewer**: In-app PDF reading with page navigation, zoom presets, full-text search, reading mode, and saved position.
+- **EPUB Reader**: Chapter (TOC) navigation, typography panel with 10+ fonts (including OpenDyslexic), reading themes (Day, Sepia, Amber, Night), adjustable font size, and full-text search.
+- **Audiobook Player**: Dedicated audiobook mode with chapter & track playlist, sleep timer, playback speed control, and ±15s skip — playback continues while the file is still downloading.
+- **Cross-Device Reading Sync**: Reading position (page, chapter, timestamp) syncs across Desktop and Mobile Wi-Fi clients.
 
 ### 🎨 Modern UI & Tray Support
 - **Glassmorphism Theme**: Vibrant dark/light theme switching with modern design system.
