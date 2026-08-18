@@ -284,7 +284,7 @@ jobs:
           BUILD_TOOLS_DIR="${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | sort -V | tail -1)"
 
           # Align and sign APK
-          ${BUILD_TOOLS_DIR}/zipalign -f -p 16 4 "$UNSIGNED_APK" /tmp/recordtor-aligned.apk
+          ${BUILD_TOOLS_DIR}/zipalign -f -P 16 4 "$UNSIGNED_APK" /tmp/recordtor-aligned.apk
           ${BUILD_TOOLS_DIR}/apksigner sign \
             --ks /tmp/upload-keystore.jks \
             --ks-key-alias "${{ secrets.KEY_ALIAS }}" \
