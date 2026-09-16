@@ -153,6 +153,9 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      NDK_HOME: /usr/local/lib/android/sdk/ndk/27.2.12479018
 
     steps:
       # ─── Clone source from private repo ───
@@ -179,14 +182,8 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android NDK
-        shell: bash
-        run: |
-          sdkmanager --install "ndk;27.2.12479018"
-          echo "NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> $GITHUB_ENV
+      - name: Accept Android Licenses
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
 
       # ─── Build frontend ───
       - name: Install frontend dependencies
