@@ -29,7 +29,7 @@ permissions:
 
 jobs:
   # ─────────────────────────────────────────────────────────────────────
-  # Desktop builds (macOS + Windows)
+  # Desktop builds (macOS + Windows + Linux)
   # ─────────────────────────────────────────────────────────────────────
   build-desktop:
     permissions:
@@ -46,6 +46,10 @@ jobs:
             target: desktop
             ffmpeg_arch: windows
             label: windows
+          - platform: ubuntu-22.04
+            target: desktop
+            ffmpeg_arch: linux
+            label: linux
     runs-on: ${{ matrix.platform }}
 
     steps:
@@ -66,6 +70,13 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target != 'desktop' && matrix.target || '' }}
+
+      # ─── Linux dependencies ───
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
       # NASM is required by aws-lc-sys for ASM crypto optimizations on Windows
       - name: Install NASM (Windows)
@@ -133,7 +144,7 @@ jobs:
           jq 'del(.plugins."deep-link")' src-tauri/tauri.conf.json > src-tauri/tauri.conf.temp.json
           mv src-tauri/tauri.conf.temp.json src-tauri/tauri.conf.json
 
-      # ─── Desktop build (macOS or Windows) ───
+      # ─── Desktop build (macOS, Windows, or Linux) ───
       - name: Build Tauri Desktop App
         uses: tauri-apps/tauri-action@v0
         env:
