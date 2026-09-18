@@ -167,6 +167,8 @@ jobs:
   build-android:
     permissions:
       contents: write
+    outputs:
+      tag: ${{ steps.release_config.outputs.tag }}
     runs-on: ubuntu-latest
     env:
       ANDROID_HOME: /usr/local/lib/android/sdk
@@ -362,3 +364,34 @@ jobs:
             --repo "$REPO" \
             --draft \
             $PRERELEASE_FLAG
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Publish release (convert draft to published)
+  # ─────────────────────────────────────────────────────────────────────
+  publish-release:
+    permissions:
+      contents: write
+    needs: [build-desktop, build-android]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.build-android.outputs.tag }}
+          REPO: ${{ github.repository }}
+        run: |
+          RELEASE_TAG="$TAG"
+          if [ -z "$RELEASE_TAG" ]; then
+            git clone --depth 1 --branch ${{ inputs.branch }} \
+              https://x-access-token:${{ secrets.PRIVATE_REPO_PAT }}@github.com/Pritraj/record-tor.git .
+            VERSION=$(grep '"version":' src-tauri/tauri.conf.json | head -n 1 | awk -F: '{ print $2 }' | sed 's/[", ]//g')
+            if [[ "${{ inputs.branch }}" == "qa" ]]; then
+              RELEASE_TAG="v${VERSION}-qa.${{ github.run_number }}"
+            else
+              RELEASE_TAG="v${VERSION}"
+            fi
+          fi
+          echo "Publishing release $RELEASE_TAG for $REPO..."
+          gh release edit "$RELEASE_TAG" --draft=false --repo "$REPO"
+          echo "🎉 Release $RELEASE_TAG is now published!"
