@@ -24,6 +24,9 @@ on:
           - qa
           - main
 
+permissions:
+  contents: write
+
 jobs:
   # ─────────────────────────────────────────────────────────────────────
   # Desktop builds (macOS + Windows)
@@ -143,8 +146,9 @@ jobs:
           tagName: ${{ steps.release_config.outputs.tag }}
           releaseName: "Record Tor ${{ steps.release_config.outputs.tag }}"
           releaseBody: "See the assets to download this version and install."
-          releaseDraft: false
+          releaseDraft: true
           prerelease: ${{ steps.release_config.outputs.prerelease }}
+          includeUpdaterJson: true
 
   # ─────────────────────────────────────────────────────────────────────
   # Android build (signed APK — arm64-v8a)
@@ -345,4 +349,5 @@ jobs:
             --title "Record Tor $TAG" \
             --notes "See the assets to download this version and install." \
             --repo "$REPO" \
+            --draft \
             $PRERELEASE_FLAG
