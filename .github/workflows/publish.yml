@@ -84,11 +84,16 @@ jobs:
         uses: ilammy/setup-nasm@v1
 
       # ─── Build frontend ───
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
       - name: Install frontend dependencies
-        run: npm install
+        run: bun install --frozen-lockfile
 
       - name: Build frontend
-        run: npm run build
+        run: bun run build
 
       # ─── Download FFmpeg for sidecar bundling ───
       - name: Setup FFmpeg binaries
@@ -203,11 +208,16 @@ jobs:
         run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
 
       # ─── Build frontend ───
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
       - name: Install frontend dependencies
-        run: npm install
+        run: bun install --frozen-lockfile
 
       - name: Build frontend
-        run: npm run build
+        run: bun run build
 
       # ─── Read version from tauri.conf.json ───
       - name: Get Version
